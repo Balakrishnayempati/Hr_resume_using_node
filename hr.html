@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HR Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input[type="text"] {
+      padding: 5px;
+      margin: 0 5px 10px 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .save-button {
+      padding: 5px 10px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    .save-button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+    <div style="background-color: rgba(0, 0, 255, 0.603);height: 60px;text-align: center;justify-content: center;">
+     <h1 style="text-align: center;color: rgb(255, 255, 255);text-shadow: 2px 2px 20px black;">Aritrak Technologies</h1>
+    </div>
+     <hr>
+  <h2 style="text-align: center;">HR Dashboard</h2>
+  <br>
+<div style="display: flex;flex-direction: row;justify-content: space-between;">
+    <div>
+  <label><b>Search by Name:</b></label>
+  <input type="text" id="SearchName" placeholder="Employee Name"/>
+  </div>
+  
+  <div>
+  <label><b>Search by Domain:</b></label>
+  <input type="text" id="SearchDomain" placeholder="Employee Domain"/>
+  </div>
+
+      <button type="submit" onclick="loadResumes()"  class="btn btn-primary">
+        <i class="fas fa-search"></i> Search
+    </button>
+  </div>
+
+  <table id="resumesTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Contact</th>
+        <th>Location</th>
+        <th>Email</th>
+        <th>Primary Domain</th>
+        <th>Secondary Domain</th>
+         <th>Experience</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script>
+    async function loadResumes() {
+      const name = document.getElementById("SearchName").value;
+      const domain = document.getElementById("SearchDomain").value;
+
+      const res = await fetch(`/resumes?name=${encodeURIComponent(name)}&domain=${encodeURIComponent(domain)}`);
+      const resumes = await res.json();
+
+      const tableBody = document.getElementById("resumesTable").querySelector("tbody");
+      tableBody.innerHTML = "";
+
+      resumes.forEach((resume) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td contenteditable="true">${resume.name}</td>
+          <td contenteditable="true">${resume.contact}</td>
+          <td contenteditable="true">${resume.location}</td>
+          <td>${resume.email}</td>
+          <td contenteditable="true">${resume.primaryDomain}</td>
+          <td contenteditable="true">${resume.secondaryDomain}</td>
+          <td contenteditable="true">${resume.experience}</td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    async function saveResume(button, email) {
+      const row = button.parentElement.parentElement;
+      const updated = {
+        name: row.cells[0].textContent.trim(),
+        contact: row.cells[1].textContent.trim(),
+        location: row.cells[2].textContent.trim(),
+        email: row.cells[3].textContent.trim(),
+        primaryDomain: row.cells[4].textContent.trim(),
+        secondaryDomain: row.cells[5].textContent.trim(),
+      };
+
+      const res = await fetch(`/resumes/${encodeURIComponent(email)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      });
+
+      alert(await res.text());
+    }
+    window.onload = loadResumes;
+  </script>
+</body>
+</html>

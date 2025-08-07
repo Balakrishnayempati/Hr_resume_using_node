@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resume</title>
+</head>
+<style>
+    #resumeForm
+    {
+        /* text-align: center;
+        padding: 30px; */
+        /* gap: 20px; */
+    border: 1px solid #080808;
+    padding: 20px;
+    width: 300px;
+    margin: 20px auto;
+    /* gap: 10px; */
+    }
+    #resumeForm>input
+    {
+        border: 2px solid black;
+        padding: 15px;
+        font-size: 20px;
+
+    }
+    #resumeForm>button
+    {
+        margin-top: 10px;
+        padding: 12px 26px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    #resumeForm>button:hover{
+        background-color: rgb(9, 9, 163);
+        color: white;
+        font-size: 18px;
+    }
+</style>
+<body>
+    <div style="background-color: rgba(0, 0, 255, 0.603);height: 60px;text-align: center;justify-content: center;">
+    <!-- <h1 style="text-align: center;color: rgb(237, 239, 241);text-shadow: 2px 2px 20px black;">Aritrak Technologies</h1> -->
+     <h1 style="text-align: center;color: rgb(255, 255, 255);text-shadow: 2px 2px 20px black;">Aritrak Technologies</h1>
+    </div>
+
+     <!-- <img src="https://aritrak.com/wp-content/uploads/2024/02/AritrakWhite-Logo-1024x252.png" height="100px" width="200px"> -->
+    <hr>
+  <h2 style="text-align: center;">Submit Your Resume</h2>
+  <form id="resumeForm">
+    <input name="name" placeholder="Name" required><br>
+    <input name="contact" placeholder="Contact" required maxlength="10"><br>
+    <input name="location" placeholder="Location" required><br>
+    <input name="email" placeholder="Email" type="email" required><br>
+    <input name="primaryDomain" placeholder="Primary Domain" required><br>
+    <input name="secondaryDomain" placeholder="Secondary Domain"><br>
+    <input name="experience" type="number" placeholder="Add your experience"><br>
+    <button type="submit" style="font-size: 20px;">Submit</button>
+  </form>
+
+  <script>
+    document.getElementById("resumeForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      const res = await fetch("/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      alert(await res.text());
+      this.reset();
+    });
+  </script>
+</body>
+</html>

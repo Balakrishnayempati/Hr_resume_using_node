@@ -1,0 +1,56 @@
+[
+  {
+    "name": "girish varadhigalla",
+    "contact": "63945205",
+    "location": "hyderabad",
+    "email": "girish@gmail.com",
+    "primaryDomain": "embedded system",
+    "secondaryDomain": "LDD linux device drivers",
+    "experience": "3"
+  },
+  {
+    "name": "girish varadhigalla",
+    "contact": "63945205",
+    "location": "hyderabad",
+    "email": "girish@gmail.com",
+    "primaryDomain": "embedded system",
+    "secondaryDomain": "LDD linux device drivers",
+    "experience": "3"
+  },
+  {
+    "name": "balu",
+    "contact": "12324545",
+    "location": "hyderabad",
+    "email": "balu@gmail.com",
+    "primaryDomain": "frontend devolper",
+    "secondaryDomain": "full stack",
+    "experience": "2"
+  },
+  {
+    "name": "ram",
+    "contact": "8727275871",
+    "location": "Banglore",
+    "email": "ram@gmail.com",
+    "primaryDomain": "full stack java",
+    "secondaryDomain": "react.js",
+    "experience": "3"
+  },
+  {
+    "name": "pankaj",
+    "contact": "7257186119",
+    "location": "banglore",
+    "email": "pankaj@gmail.com",
+    "primaryDomain": "physical design",
+    "secondaryDomain": "VLSI",
+    "experience": "4"
+  },
+  {
+    "name": "Rukmin",
+    "contact": "6812763817",
+    "location": "banglore",
+    "email": "rukmin@gmail.com",
+    "primaryDomain": "VLSI",
+    "secondaryDomain": "PD",
+    "experience": "3"
+  }
+]
