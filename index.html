@@ -3,74 +3,210 @@
 <head>
   <meta charset="UTF-8">
   <title>Resume</title>
-</head>
-<style>
-    #resumeForm
-    {
-        /* text-align: center;
-        padding: 30px; */
-        /* gap: 20px; */
-    border: 1px solid #080808;
-    padding: 20px;
-    width: 300px;
-    margin: 20px auto;
-    /* gap: 10px; */
+  <style>
+    #resumeForm {
+        border: 1px solid #080808;
+        padding: 55px;
+        width: 400px;
+        margin: 20px auto;
     }
-    #resumeForm>input
-    {
+    #resumeForm>input, 
+    #resumeForm>select {
         border: 2px solid black;
-        padding: 15px;
-        font-size: 20px;
-
+        padding: 10px;
+        font-size: 16px;
+        margin-bottom: 10px;
+        width: 100%;
     }
-    #resumeForm>button
-    {
+    #resumeForm>button {
         margin-top: 10px;
         padding: 12px 26px;
-        font-size: 12px;
+        font-size: 16px;
         cursor: pointer;
     }
-    #resumeForm>button:hover{
+    #resumeForm>button:hover {
         background-color: rgb(9, 9, 163);
         color: white;
         font-size: 18px;
     }
-</style>
+    label {
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    .checkbox-group label {
+        font-weight: normal;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-right: 8px;
+    }
+  </style>
+</head>
 <body>
     <div style="background-color: rgba(0, 0, 255, 0.603);height: 60px;text-align: center;justify-content: center;">
-    <!-- <h1 style="text-align: center;color: rgb(237, 239, 241);text-shadow: 2px 2px 20px black;">Aritrak Technologies</h1> -->
-     <h1 style="text-align: center;color: rgb(255, 255, 255);text-shadow: 2px 2px 20px black;">Aritrak Technologies</h1>
+        <h1 style="text-align: center;color: white;text-shadow: 2px 2px 20px black;">Aritrak Technologies</h1>
     </div>
 
-     <!-- <img src="https://aritrak.com/wp-content/uploads/2024/02/AritrakWhite-Logo-1024x252.png" height="100px" width="200px"> -->
     <hr>
-  <h2 style="text-align: center;">Submit Your Resume</h2>
-  <form id="resumeForm">
-    <input name="name" placeholder="Name" required><br>
-    <input name="contact" placeholder="Contact" required maxlength="10"><br>
-    <input name="location" placeholder="Location" required><br>
-    <input name="email" placeholder="Email" type="email" required><br>
-    <input name="primaryDomain" placeholder="Primary Domain" required><br>
-    <input name="secondaryDomain" placeholder="Secondary Domain"><br>
-    <input name="experience" type="number" placeholder="Add your experience"><br>
-    <button type="submit" style="font-size: 20px;">Submit</button>
-  </form>
+    <h2 style="text-align: center;">Submit Your Resume</h2>
+    <form id="resumeForm">
+        <label for="name">Name:</label>
+        <input id="name" name="name" placeholder="Name" required>
 
-  <script>
-    document.getElementById("resumeForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData.entries());
+        <label for="contact">Contact:</label>
+        <input id="contact" name="contact" placeholder="Contact" required maxlength="10">
 
-      const res = await fetch("/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
+        <label for="email">Email:</label>
+        <input id="email" name="email" placeholder="Email" type="email" required>
 
-      alert(await res.text());
-      this.reset();
-    });
-  </script>
+        <label for="primaryDomain">Primary Domain:</label>
+        <select id="primaryDomain" name="primaryDomain" required>
+            <option value="">Select Primary Skill</option>
+            <option value="Embedded Systems">Embedded Systems</option>
+            <option value="Physical Design">Physical Design</option>
+            <option value="Analog Design">Analog Design</option>
+            <option value="Memory Layout">Memory Layout</option>
+            <option value="DFT">DFT</option>
+            <option value="Mobile App Development">Mobile App Development</option>
+        </select>
+
+        <label for="secondaryDomain">Secondary Domain:</label>
+        <select id="secondaryDomain" name="secondaryDomain" required>
+            <option value="">Select Secondary Skill</option>
+        </select>
+
+
+        <label>Skills:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="skills" value="Java"> Java</label>
+            <label><input type="checkbox" name="skills" value="Python"> Python</label>
+            <label><input type="checkbox" name="skills" value="Node.js"> Node.js</label>
+            <label><input type="checkbox" name="skills" value="C"> C</label>
+            <label><input type="checkbox" name="skills" value="C++"> C++</label>
+            <label><input type="checkbox" name="skills" value="SQL"> SQL</label>
+            <label><input type="checkbox" name="skills" value="NoSQL"> NoSQL</label>
+            <label><input type="checkbox" name="skills" value="React"> React</label>
+            <label><input type="checkbox" name="skills" value="JavaScript"> JavaScript</label>
+            <label><input type="checkbox" name="skills" value="MongoDB"> MongoDB</label>
+            <label><input type="checkbox" name="skills" value="MERN"> MERN</label>
+            <label><input type="checkbox" name="skills" value="MEAN"> MEAN</label>
+            <label><input type="checkbox" name="skills" value="Others">Others</label>
+        </div>
+
+        <label for="experience">Experience (in years):</label>
+        <input id="experience" name="experience" type="number" placeholder="Add your experience">
+
+        <label for="currentCTC">Current CTC:</label>
+        <input id="currentCTC" name="currentCTC" placeholder="Current CTC">
+
+        <label for="expectedCTC">Expected CTC:</label>
+        <input id="expectedCTC" name="expectedCTC" placeholder="Expected CTC">
+
+        <label for="noticePeriod">Notice Period:</label>
+        <input id="noticePeriod" name="noticePeriod" placeholder="Notice Period">
+
+        <label for="currentLocation">Current Location:</label>
+        <input id="currentLocation" name="currentLocation" placeholder="Current Location">
+
+        <label for="preferredLocation">Preferred Location:</label>
+        <select id="preferredLocation" name="preferredLocation">
+            <option value="">Select Preferred Location</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Pune">Pune</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Ahmedabad">Ahmedabad</option>
+            <option value="Gurgaon">Gurgaon</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        const secondarySkillsMap = {
+            "Embedded Systems": [
+                "Linux Device Drivers",
+                "Windows Device Drivers",
+                "Firmware Development",
+                "Software Testing"
+            ],
+            "Physical Design": [
+                "Floorplanning",
+                "Placement & Routing",
+                "Clock Tree Synthesis",
+                "Static Timing Analysis"
+            ],
+            "Analog Design": [
+                "SPICE Simulation",
+                "Op-Amp Design",
+                "ADC/DAC Design",
+                "Noise Analysis"
+            ],
+            "Memory Layout": [
+                "SRAM Layout",
+                "DRAM Layout",
+                "ROM Layout",
+                "Bitcell Design"
+            ],
+            "DFT": [
+                "Scan Insertion",
+                "Boundary Scan (JTAG)",
+                "Built-In Self-Test",
+                "ATPG Pattern Generation"
+            ],
+            "Mobile App Development": [
+                "UI/UX Design",
+                "API Integration",
+                "Firebase Integration",
+                "Offline Data Storage"
+            ]
+        };
+
+        document.getElementById("primaryDomain").addEventListener("change", function () {
+            const secondarySelect = document.getElementById("secondaryDomain");
+            secondarySelect.innerHTML = '<option value="">Select Secondary Skill</option>';
+
+            const selectedPrimary = this.value;
+            if (secondarySkillsMap[selectedPrimary]) {
+                secondarySkillsMap[selectedPrimary].forEach(skill => {
+                    const option = document.createElement("option");
+                    option.value = skill;
+                    option.textContent = skill;
+                    secondarySelect.appendChild(option);
+                });
+            }
+        });
+
+        document.getElementById("resumeForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const skills = [];
+            document.querySelectorAll('input[name="skills"]:checked').forEach(cb => skills.push(cb.value));
+            formData.set("skills", skills);
+
+            const data = Object.fromEntries(formData.entries());
+
+            const res = await fetch("/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            alert(await res.text());
+            this.reset();
+        });
+    </script>
 </body>
 </html>
+
+
+

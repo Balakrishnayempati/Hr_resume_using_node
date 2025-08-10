@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>HR Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-    }
-    input[type="text"] {
-      padding: 5px;
-      margin: 0 5px 10px 0;
     }
     table {
       border-collapse: collapse;
@@ -27,39 +23,65 @@
     th {
       background-color: #f2f2f2;
     }
-    .save-button {
-      padding: 5px 10px;
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-    .save-button:hover {
-      background-color: #45a049;
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
     }
   </style>
 </head>
 <body>
-    <div style="background-color: rgba(0, 0, 255, 0.603);height: 60px;text-align: center;justify-content: center;">
-     <h1 style="text-align: center;color: rgb(255, 255, 255);text-shadow: 2px 2px 20px black;">Aritrak Technologies</h1>
-    </div>
-     <hr>
-  <h2 style="text-align: center;">HR Dashboard</h2>
-  <br>
-<div style="display: flex;flex-direction: row;justify-content: space-between;">
-    <div>
-  <label><b>Search by Name:</b></label>
-  <input type="text" id="SearchName" placeholder="Employee Name"/>
-  </div>
-  
-  <div>
-  <label><b>Search by Domain:</b></label>
-  <input type="text" id="SearchDomain" placeholder="Employee Domain"/>
+  <div style="background-color: rgba(0, 0, 255, 0.603);height: 60px;text-align: center;justify-content: center;">
+    <h1 style="color: white;text-shadow: 2px 2px 20px black;">Aritrak Technologies</h1>
   </div>
 
-      <button type="submit" onclick="loadResumes()"  class="btn btn-primary">
-        <i class="fas fa-search"></i> Search
-    </button>
+  <hr>
+  <h2 style="text-align: center;">HR Dashboard</h2>
+  <br>
+
+  <div class="filter-group">
+    <div>
+      <label><b>Search by Primary Domain:</b></label>
+      <select id="SearchPrimaryDomain">
+        <option value="">Select Primary Skill</option>
+        <option value="Embedded Systems">Embedded Systems</option>
+        <option value="Physical Design">Physical Design</option>
+        <option value="Analog Design">Analog Design</option>
+        <option value="Memory Layout">Memory Layout</option>
+        <option value="DFT">DFT</option>
+        <option value="Mobile App Development">Mobile App Development</option>
+      </select>
+    </div>
+
+    <div>
+      <label><b>Search by Secondary Domain:</b></label>
+      <input type="text" id="SearchSecondaryDomain" placeholder="Secondary Skill"/>
+    </div>
+
+    <div>
+      <label><b>Search by Skills:</b></label>
+      <select id="SearchSkill">
+        <option value="">Select Skill</option>
+        <option value="Java">Java</option>
+        <option value="Python">Python</option>
+        <option value="Node.js">Node.js</option>
+        <option value="C">C</option>
+        <option value="C++">C++</option>
+        <option value="SQL">SQL</option>
+        <option value="NoSQL">NoSQL</option>
+        <option value="React">React</option>
+        <option value="JavaScript">JavaScript</option>
+        <option value="MongoDB">MongoDB</option>
+        <option value="MERN">MERN</option>
+        <option value="MEAN">MEAN</option>
+      </select>
+    </div>
+
+    <div style="align-self: end;">
+      <button type="submit" onclick="filterResumes()" class="btn btn-primary">
+        Search
+      </button>
+    </div>
   </div>
 
   <table id="resumesTable">
@@ -67,65 +89,95 @@
       <tr>
         <th>Name</th>
         <th>Contact</th>
-        <th>Location</th>
         <th>Email</th>
         <th>Primary Domain</th>
         <th>Secondary Domain</th>
-         <th>Experience</th>
+        <th>Skills</th>
+        <th>Experience</th>
+        <th>Current CTC</th>
+        <th>Expected CTC</th>
+        <th>Notice Period</th>
+        <th>Current Location</th>
+        <th>Preferred Location</th>
       </tr>
     </thead>
-    <tbody>
-    </tbody>
+    <tbody></tbody>
   </table>
 
   <script>
-    async function loadResumes() {
-      const name = document.getElementById("SearchName").value;
-      const domain = document.getElementById("SearchDomain").value;
+    let allResumes = [];
 
-      const res = await fetch(`/resumes?name=${encodeURIComponent(name)}&domain=${encodeURIComponent(domain)}`);
-      const resumes = await res.json();
+    window.onload = async function() {
+      const res = await fetch("/resumes");
+      allResumes = await res.json();
+      renderTable(allResumes);
+    };
 
-      const tableBody = document.getElementById("resumesTable").querySelector("tbody");
+    function renderTable(resumes) {
+      const tableBody = document.querySelector("#resumesTable tbody");
       tableBody.innerHTML = "";
+
+      if (resumes.length === 0) {
+        const noDataRow = `<tr><td colspan="12" style="text-align:center;color:red;">
+          No profile found on this skill
+        </td></tr>`;
+        tableBody.innerHTML = noDataRow;
+        return;
+      }
 
       resumes.forEach((resume) => {
         const row = document.createElement("tr");
-
         row.innerHTML = `
-          <td contenteditable="true">${resume.name}</td>
-          <td contenteditable="true">${resume.contact}</td>
-          <td contenteditable="true">${resume.location}</td>
-          <td>${resume.email}</td>
-          <td contenteditable="true">${resume.primaryDomain}</td>
-          <td contenteditable="true">${resume.secondaryDomain}</td>
-          <td contenteditable="true">${resume.experience}</td>
+          <td>${resume.name || ""}</td>
+          <td>${resume.contact || ""}</td>
+          <td>${resume.email || ""}</td>
+          <td>${resume.primaryDomain || ""}</td>
+          <td>${resume.secondaryDomain || ""}</td>
+          <td>${Array.isArray(resume.skills) ? resume.skills.join(", ") : (resume.skills || "")}</td>
+          <td>${resume.experience || ""}</td>
+          <td>${resume.currentCTC || ""}</td>
+          <td>${resume.expectedCTC || ""}</td>
+          <td>${resume.noticePeriod || ""}</td>
+          <td>${resume.currentLocation || ""}</td>
+          <td>${resume.preferredLocation || ""}</td>
         `;
-
         tableBody.appendChild(row);
       });
     }
 
-    async function saveResume(button, email) {
-      const row = button.parentElement.parentElement;
-      const updated = {
-        name: row.cells[0].textContent.trim(),
-        contact: row.cells[1].textContent.trim(),
-        location: row.cells[2].textContent.trim(),
-        email: row.cells[3].textContent.trim(),
-        primaryDomain: row.cells[4].textContent.trim(),
-        secondaryDomain: row.cells[5].textContent.trim(),
-      };
+   
+    function filterResumes() {
+      const primaryDomain = document.getElementById("SearchPrimaryDomain").value.trim().toLowerCase();
+      const secondaryDomain = document.getElementById("SearchSecondaryDomain").value.trim().toLowerCase();
+      const skill = document.getElementById("SearchSkill").value.trim().toLowerCase();
 
-      const res = await fetch(`/resumes/${encodeURIComponent(email)}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated),
+      const filtered = allResumes.filter((resume) => {
+        const matchPrimary = primaryDomain
+          ? (resume.primaryDomain || "").toLowerCase() === primaryDomain
+          : true;
+
+        const matchSecondary = secondaryDomain
+          ? (resume.secondaryDomain || "").toLowerCase().includes(secondaryDomain)
+          : true;
+
+        const matchSkill = skill
+          ? (() => {
+              let skillsArray = [];
+              if (Array.isArray(resume.skills)) {
+                skillsArray = resume.skills;
+              } else if (typeof resume.skills === "string") {
+                skillsArray = resume.skills.split(","); // split if comma separated
+              }
+              return skillsArray.some(s => s.trim().toLowerCase() === skill || s.trim().toLowerCase().includes(skill));
+            })()
+          : true;
+
+        return matchPrimary && matchSecondary && matchSkill;
       });
 
-      alert(await res.text());
+      renderTable(filtered);
     }
-    window.onload = loadResumes;
   </script>
 </body>
 </html>
+

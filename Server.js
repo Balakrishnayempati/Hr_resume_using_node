@@ -7,7 +7,6 @@ const server = http.createServer((request, response) => {
   const pathname = parsedUrl.pathname;
   const method = request.method;
 
-  // POST method
   if (method === "POST" && pathname === "/submit") {
     let body = "";
     request.on("data", chunk => (body += chunk));
@@ -23,8 +22,6 @@ const server = http.createServer((request, response) => {
     });
     return;
   }
-
-  // GET method
   if (method === "GET" && pathname === "/resumes") {
     fs.readFile("resumes.json", "utf-8", (err, data) => {
       if (err) {
@@ -34,13 +31,29 @@ const server = http.createServer((request, response) => {
       }
 
       let resumes = JSON.parse(data || "[]");
-      const { name, domain } = parsedUrl.query;
+      const { name, primaryDomain, secondaryDomain, skill } = parsedUrl.query;
 
       if (name) {
-        resumes = resumes.filter(r => r.name.toLowerCase().includes(name.toLowerCase()));
+        resumes = resumes.filter(r =>
+          (r.name || "").toLowerCase().includes(name.toLowerCase())
+        );
       }
-      if (domain) {
-        resumes = resumes.filter(r => r.primaryDomain.toLowerCase().includes(domain.toLowerCase()));
+      if (primaryDomain) {
+        resumes = resumes.filter(r =>
+          (r.primaryDomain || "").toLowerCase().includes(primaryDomain.toLowerCase())
+        );
+      }
+      if (secondaryDomain) {
+        resumes = resumes.filter(r =>
+          (r.secondaryDomain || "").toLowerCase().includes(secondaryDomain.toLowerCase())
+        );
+      }
+      if (skill) {
+        resumes = resumes.filter(r =>
+          Array.isArray(r.skills)
+            ? r.skills.some(s => s.toLowerCase().includes(skill.toLowerCase()))
+            : (r.skills || "").toLowerCase().includes(skill.toLowerCase())
+        );
       }
 
       response.writeHead(200, { "Content-Type": "application/json" });
@@ -48,8 +61,6 @@ const server = http.createServer((request, response) => {
     });
     return;
   }
-
-  // PUT method
   if (method === "PUT" && pathname.startsWith("/resumes/")) {
     const email = decodeURIComponent(pathname.split("/")[2]);
     let body = "";
@@ -61,7 +72,10 @@ const server = http.createServer((request, response) => {
       fs.readFile("resumes.json", "utf-8", (err, data) => {
         let resumes = JSON.parse(data || "[]");
         const index = resumes.findIndex(r => r.email === email);
-        if (index === -1) return res.end("Resume not found");
+        if (index === -1) {
+          response.end("Resume not found");
+          return;
+        }
 
         resumes[index] = updated;
 
@@ -72,6 +86,7 @@ const server = http.createServer((request, response) => {
     });
     return;
   }
+
 
   if (request.method === "GET" && (pathname === "/" || pathname.endsWith(".html"))) {
     const filePath = pathname === "/" ? "index.html" : pathname.slice(1);
@@ -92,5 +107,5 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(3022, () => {
-  console.log("Server running on port number:3022");
+  console.log("Server running on port number: 3022");
 });
